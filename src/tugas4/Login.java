@@ -73,43 +73,65 @@ public class Login extends JFrame{
         login.setBounds(65, 120, 90, 20);
         daftar.setBounds(220,120,90,20);
         
-        daftar.addActionListener((ActionEvent arg0) -> {
-            try {
-                String query = "SELECT * FROM users WHERE username = '"+getR_user()+"'";
+        daftar.addActionListener(new ActionListener() {
+            String query;
                 
-                connector.statement = connector.koneksi.createStatement();
-                ResultSet resultSet = connector.statement.executeQuery(query);
-                
-                if(!resultSet.next()){
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                   try {
+            query = "SELECT * FROM users WHERE username = '"+getR_user()+"'";
+            
+            connector.statement = connector.koneksi.createStatement();
+            ResultSet resultSet = connector.statement.executeQuery(query);
+
+            if(!resultSet.next()){
+                if("".equals(getR_user()) && "".equals(getR_pwd()) ) {
+                    JOptionPane.showMessageDialog(null,"Input kosong");
+                } else {
                     query = "INSERT INTO `users`(`username`, `password`) VALUES ('"+getR_user()+"','"+getR_pwd()+"')";
-                    
+
                     connector.statement = connector.koneksi.createStatement();
                     connector.statement.executeUpdate(query);
-                    
+
                     JOptionPane.showMessageDialog(null,"Berhasil Mendaftarkan User");
-                }else{
-                    JOptionPane.showMessageDialog(null,"Username sudah digunakan");
                 }
                 
-            } catch (  HeadlessException | SQLException ex){
-                System.out.println(ex.getMessage());
+            }else{
+                JOptionPane.showMessageDialog(null,"Username sudah digunakan");
+            }
+            
+        } catch (  HeadlessException | SQLException ex){
+            System.out.println(ex.getMessage());
+        }
             }
         });  
 
-        login.addActionListener((ActionEvent arg0) -> {
-            try {
-                String query = "SELECT * FROM users WHERE username = '"+getL_user()+"' AND password='"+getL_pwd()+"'";
-                
-                connector.statement = connector.koneksi.createStatement();
-                ResultSet resultSet = connector.statement.executeQuery(query);
-                
-                if(resultSet.next()){
+        login.addActionListener(new ActionListener() {
+            String query;
+            
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                   try {
+            query = "SELECT * FROM users WHERE username = '"+getL_user()+"'";
+            
+            connector.statement = connector.koneksi.createStatement();
+            ResultSet resultSet = connector.statement.executeQuery(query);
+
+            if(resultSet.next()){
+                if(resultSet.getString("password").equals(getL_pwd()) )
                     JOptionPane.showMessageDialog(null,"Berhasil Login");
-                }else{
+                else
+                    JOptionPane.showMessageDialog(null,"Password salah");
+            }else{
+                if("".equals(getL_user()) && "".equals(getL_pwd()) ) {
+                    JOptionPane.showMessageDialog(null,"Input kosong");
+                } else {
                     JOptionPane.showMessageDialog(null,"Username tidak ditemukan");
                 }
-            } catch (  HeadlessException | SQLException ex){
-                System.out.println(ex.getMessage());
+            }    
+        } catch (  HeadlessException | SQLException ex){
+            System.out.println(ex.getMessage());
+        }
             }
         });    
     }
